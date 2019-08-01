@@ -3,11 +3,12 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import { setAuthenticationHeader } from '../utils/authenticate'
 import {Link, NavLink} from 'react-router-dom'
+import { Route, Redirect, withRouter } from 'react-router'
 
 class Login extends Component {
     constructor () {
         super() 
-
+        this.onLogout = this.handleLoginClick.bind(this);
         this.state = {
             username: '',
             password: '',
@@ -30,38 +31,17 @@ class Login extends Component {
             localStorage.setItem('jsonwebtoken',token)
             this.props.onAuthenticated(token)
             setAuthenticationHeader(token)
-        }).then(function() {
-            this.props.history.push("/view-all-cards")
+            this.props.history.push('/view-all-cards')
         }).catch(error => console.log(error))
     }
-
-    // handleLoginClick = () => {
-    //     axios.post('http://localhost:8080/login',{
-    //         username: this.state.username,
-    //         password: this.state.password
-    //     }).then((response) =>  {
-    //       if(response.data) {
-    //         let token = response.data.token
-    //         localStorage.setItem('jsonwebtoken', token)
-    //         this.props.onAuthenticated(token)
-    //         this.props.history.push('/view-all-cards')
-    //       } else if (!response.data) {
-    //         this.setState({
-    //           ...this.state,
-    //           message: response.data.message
-    //         })
-    //       }
-    //     })
-    //   }
     
-
 
     render() {
         return(
             <div> 
                 <input name="username" onChange={this.handleTextBoxChange} placeholder='Username'></input>
                 <input name="password" type="password" onChange={this.handleTextBoxChange} placeholder='Password'></input>
-                <NavLink to="/view-all-cards"><button onClick={this.handleLoginClick}>Login</button></NavLink>
+                <button onClick={this.handleLoginClick}>Login</button>
             </div> 
         )
     }
@@ -73,4 +53,5 @@ const mapDispatchToProps = (dispatch) => {
     }
   }
 
-export default connect(null,mapDispatchToProps)(Login)
+export default connect(null,mapDispatchToProps)(withRouter(Login))
+// <NavLink to="/view-all-cards"><button onClick={this.handleLoginClick}>Login</button></NavLink>
